@@ -4,3 +4,4 @@ beautifulsoup4
 selenium
 requests
 html5lib
+lxml
