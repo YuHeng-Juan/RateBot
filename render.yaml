@@ -3,7 +3,7 @@ services:
   name: dollar-robot
   env: python
   repo: https://github.com/YuHeng-Juan/RateBot.git
-  buildCommand: pip install -r requirements.txt
+  buildCommand: python -m pip install --upgrade pip;pip install -r requirements.txt
   startCommand: python app.py
   plan: free
   autoDeploy: false
