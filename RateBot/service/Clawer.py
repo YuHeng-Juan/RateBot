@@ -5,6 +5,7 @@ from urllib import request
 import requests
 import random
 import psycopg2
+from lxml import etree, html
 
 def ticketInfo():
     inFo = ""
@@ -34,54 +35,69 @@ def imageInfo(url):
 
 def exchangeRate(country):
     
-    resp = requests.get("https://www.tcb-bank.com.tw/finance_info/rate_history/Pages/fehistorybyduration.aspx")
-    resp.encoding = "utf-8"
-    rateString = ""
-    soup = BeautifulSoup(resp.text, 'html.parser')
-    first_table = soup.find_all('table')
-    index = 0
-    index2 =0
-    for table in first_table:
-        index += 1
-        if index == 5:
-            main_tab = table.find_all('table')
-            for table2 in main_tab:
-                index2 += 1
-                if index2 ==2:
-                    index3 = 0
-                    main_tr = table2.find_all('tr')
-                    for tr in main_tr:
-                        index3 += 1
-                        if index3 == 3:
-                            temp = ""
-                            tdNum = 0
-                            main_td = tr.find_all("td")
-                            for td in main_td:
-                                tdNum += 1
-                                if tdNum != 7:
-                                    if tdNum == 5:
-                                        temp = temp + "即期:" + td.find("span").text +"\n"
-                                    elif tdNum == 6:   
-                                        temp = temp + "現鈔:" + td.find("span").text +"\n"
-                                    else:
-                                        temp = temp + td.find("span").text + "\n"
-                            rateString += temp
-                        if index3 == 4:
-                            temp = ""
-                            tdNum = 0
-                            main_td = tr.find_all("td")
-                            for td in main_td:
-                                tdNum += 1
-                                if tdNum > 3:
-                                    if tdNum == 5:
-                                        temp = temp + "即期:" + td.find("span").text +"\n"
-                                    elif tdNum == 6:   
-                                        temp = temp + "現鈔:" + td.find("span").text +"\n"
-                                    else:
-                                        temp = temp + td.find("span").text + "\n"
-                            temp = temp + "\n"
-                            rateString += temp
-    return rateString
+    resp = requests.get("https://rate.bot.com.tw/xrt?Lang=zh-TW")
+    byte_data = resp.content
+    source_code = etree.HTML(byte_data)
+    # print(source_code)
+    bank_cash_buy = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[2]')
+    bank_cash_sell = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[3]')
+    bank_online_buy = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[4]')
+    bank_online_sell = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[5]')
+    result = "現金買入: " + bank_cash_buy[0].text.strip() + '\n' + "現金賣出: " + bank_cash_sell[0].text.strip() + '\n\n' + "即期買入: " + bank_online_buy[0].text.strip() + '\n' + "即期賣出: " + bank_online_sell[0].text.strip() + '\n'
+    return result
+    # resp.encoding = "utf-8"
+    # rateString = ""
+    # soup = BeautifulSoup(resp.text, 'html.parser')
+    # first_table = soup.find_all("table", class_="c-table is-pcRight")
+    # # print(first_table[0])
+    # for table in first_table:
+    #     tbody = table.find("tbody")
+    #     print(tbody.contents)
+    # # print(first_table.string)
+    # input()
+    # index = 0
+    # index2 =0
+    # for table in first_table:
+    #     index += 1
+    #     if index == 5:
+    #         main_tab = table.find_all('table')
+    #         for table2 in main_tab:
+    #             index2 += 1
+    #             if index2 ==2:
+    #                 index3 = 0
+    #                 main_tr = table2.find_all('tr')
+    #                 for tr in main_tr:
+    #                     index3 += 1
+    #                     if index3 == 3:
+    #                         temp = ""
+    #                         tdNum = 0
+    #                         main_td = tr.find_all("td")
+    #                         for td in main_td:
+    #                             tdNum += 1
+    #                             if tdNum != 7:
+    #                                 if tdNum == 5:
+    #                                     temp = temp + "即期:" + td.find("span").text +"\n"
+    #                                 elif tdNum == 6:   
+    #                                     temp = temp + "現鈔:" + td.find("span").text +"\n"
+    #                                 else:
+    #                                     temp = temp + td.find("span").text + "\n"
+    #                         rateString += temp
+    #                     if index3 == 4:
+    #                         temp = ""
+    #                         tdNum = 0
+    #                         main_td = tr.find_all("td")
+    #                         for td in main_td:
+    #                             tdNum += 1
+    #                             if tdNum > 3:
+    #                                 if tdNum == 5:
+    #                                     temp = temp + "即期:" + td.find("span").text +"\n"
+    #                                 elif tdNum == 6:   
+    #                                     temp = temp + "現鈔:" + td.find("span").text +"\n"
+    #                                 else:
+    #                                     temp = temp + td.find("span").text + "\n"
+    #                         temp = temp + "\n"
+    #                         rateString += temp
+    # return rateString
 
     # index = 0
     # main_tr = first_table.find_all('tr')
@@ -285,9 +301,9 @@ def randomIgImage():
 if __name__ == '__main__':
     # Test Function
     # IgUrl = "https://www.instagram.com/p/BymVt2NH5OE/?igshid=7jpeb1f596h6"
-    # IString = exchangeRate("JPY")
-    IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
+    IString = exchangeRate("USD")
+    # IArray = getCk101Photo('https://ck101.com/thread-5017396-1-1.html')
     # IArray = getImage('https://www.mzitu.com/187752/16')
     # SData = randomIgImage()
 
-    print(IArray)
+    print(IString)
