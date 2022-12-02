@@ -3,9 +3,7 @@ import os
 from bs4 import BeautifulSoup
 from urllib import request
 import requests
-import random
-import psycopg2
-from lxml import etree, html
+from lxml import etree
 
 def ticketInfo():
     inFo = ""
@@ -130,170 +128,170 @@ def exchangeRate(country):
     # rateString += "\n連結:http://www.findrate.tw/"+country+"/"
     # return rateString
 
-def fruitPrice(fruit):
-    fruitString = ""
-    resp = requests.get("https://www.twfood.cc/fruit/"+fruit+")")
-    resp.encoding = "utf-8"
-    soup = BeautifulSoup(resp.text, 'html.parser')
-    table = soup.find_all('table', 'table-hover')
-    main_tr = table[0].find_all('tr')
+# def fruitPrice(fruit):
+#     fruitString = ""
+#     resp = requests.get("https://www.twfood.cc/fruit/"+fruit+")")
+#     resp.encoding = "utf-8"
+#     soup = BeautifulSoup(resp.text, 'html.parser')
+#     table = soup.find_all('table', 'table-hover')
+#     main_tr = table[0].find_all('tr')
 
-    index = 0
-    temp = ""
-    for tr in main_tr:
-        if index%3 == 0:
-            main_td = tr.find_all("th")
-            if temp != "":
-                temp +="\n"
+#     index = 0
+#     temp = ""
+#     for tr in main_tr:
+#         if index%3 == 0:
+#             main_td = tr.find_all("th")
+#             if temp != "":
+#                 temp +="\n"
 
-            temp +=  main_td[0].text.strip()
+#             temp +=  main_td[0].text.strip()
 
-        if index%3 == 1:
-            main_str = tr.find_all("span")
-            price = tr.find_all("th","vege_chart_th_unit")
-            temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
+#         if index%3 == 1:
+#             main_str = tr.find_all("span")
+#             price = tr.find_all("th","vege_chart_th_unit")
+#             temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
 
-        if index%3 == 2:
-            main_str = tr.find_all("span")
-            price = tr.find_all("th","vege_chart_th_unit")
-            temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
+#         if index%3 == 2:
+#             main_str = tr.find_all("span")
+#             price = tr.find_all("th","vege_chart_th_unit")
+#             temp +="\n " + str(main_str[0].text).strip() +" "+ str(price[0].text).strip()
 
-        index = index + 1
+#         index = index + 1
 
-    return temp
+#     return temp
 
 
 
-def getSebUrl(url):
-    # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
-    print(url)
-    mheaders = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
-    req = request.Request(url,headers=mheaders) #新增headers避免伺服器拒絕非瀏覽器訪問
-    page = request.urlopen(req)
-    html = page.read()
-    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
-    body = soup.find(id="pins")
-    link = body.find_all("li")
-    next_link = []
-    for li_element in link:
-        # print(li_element.find('a').get('href'))
-        next_link.append(li_element.find('a').get('href'))
+# def getSebUrl(url):
+#     # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
+#     print(url)
+#     mheaders = {
+#         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+#     req = request.Request(url,headers=mheaders) #新增headers避免伺服器拒絕非瀏覽器訪問
+#     page = request.urlopen(req)
+#     html = page.read()
+#     soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+#     body = soup.find(id="pins")
+#     link = body.find_all("li")
+#     next_link = []
+#     for li_element in link:
+#         # print(li_element.find('a').get('href'))
+#         next_link.append(li_element.find('a').get('href'))
 
-    num = random.randint(1, len(next_link)-1)
+#     num = random.randint(1, len(next_link)-1)
 
-    return next_link[num]  # python3 python2版本直接返回html
+#     return next_link[num]  # python3 python2版本直接返回html
 
-def getHtmlImgUrl(url):
-    print(url)
-    index = []
-    mheaders = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
-    req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
-    page = request.urlopen(req)
-    html = page.read()
-    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
-    body = soup.find(class_="pagenavi")
-    page = body.find_all("a")
+# def getHtmlImgUrl(url):
+#     print(url)
+#     index = []
+#     mheaders = {
+#         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+#     req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
+#     page = request.urlopen(req)
+#     html = page.read()
+#     soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+#     body = soup.find(class_="pagenavi")
+#     page = body.find_all("a")
 
-    for page_element in page:
-        # print(page_element.get('href').split('/'))
-        element = page_element.get('href').split('/')
-        if element[len(element)-1] != "":
-            index.append(int(element[len(element)-1]))
+#     for page_element in page:
+#         # print(page_element.get('href').split('/'))
+#         element = page_element.get('href').split('/')
+#         if element[len(element)-1] != "":
+#             index.append(int(element[len(element)-1]))
 
-    return url+"/"+str(random.randint(1, index[4]))
+#     return url+"/"+str(random.randint(1, index[4]))
 
-def getImage(url):
-    print(url)
-    mheaders = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
-    req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
-    page = request.urlopen(req)
-    html = page.read()
-    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
-    body = soup.find(class_='main-image')
-    img = body.find('img').get('src')
+# def getImage(url):
+#     print(url)
+#     mheaders = {
+#         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+#     req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
+#     page = request.urlopen(req)
+#     html = page.read()
+#     soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+#     body = soup.find(class_='main-image')
+#     img = body.find('img').get('src')
 
-    return  img
+#     return  img
 
-def getCk101Url(url):
-    print("getCk101Url url:" + url)
-    # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
-    index = []
-    mheaders = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
-    req = request.Request(url,headers=mheaders) #新增headers避免伺服器拒絕非瀏覽器訪問
-    page = request.urlopen(req)
-    html = page.read()
-    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
-    main = soup.find('div','bt-main-cont')
-    search_li = main.find_all('li')
-    for li in search_li:
-        element = li.find('a').get('href')
-        if not element is None:
-            index.append(element)
+# def getCk101Url(url):
+#     print("getCk101Url url:" + url)
+#     # 瀏覽器請求頭（大部分網站沒有這個請求頭可能會報錯）
+#     index = []
+#     mheaders = {
+#         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+#     req = request.Request(url,headers=mheaders) #新增headers避免伺服器拒絕非瀏覽器訪問
+#     page = request.urlopen(req)
+#     html = page.read()
+#     soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+#     main = soup.find('div','bt-main-cont')
+#     search_li = main.find_all('li')
+#     for li in search_li:
+#         element = li.find('a').get('href')
+#         if not element is None:
+#             index.append(element)
 
-    getOne = index[random.randint(0, len(index)-1)]
-    print("getCk101Url back url :" + getOne)
-    return getOne
+#     getOne = index[random.randint(0, len(index)-1)]
+#     print("getCk101Url back url :" + getOne)
+#     return getOne
 
-def getCk101Photo(url):
-    print("photo url:"+url)
-    index = []
-    mheaders = {
-        'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
-    req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
-    page = request.urlopen(req)
-    html = page.read()
-    soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
-    main_table = soup.find(id = 'lightboxwrap')
-    img_all = main_table.find_all('img')
+# def getCk101Photo(url):
+#     print("photo url:"+url)
+#     index = []
+#     mheaders = {
+#         'User-Agent': "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"}
+#     req = request.Request(url, headers=mheaders)  # 新增headers避免伺服器拒絕非瀏覽器訪問
+#     page = request.urlopen(req)
+#     html = page.read()
+#     soup = BeautifulSoup(html.decode('utf-8'), 'html.parser')
+#     main_table = soup.find(id = 'lightboxwrap')
+#     img_all = main_table.find_all('img')
 
-    for img in img_all:
-        element = img.get('file')
-        if not element is None:
-            index.append(element)
+#     for img in img_all:
+#         element = img.get('file')
+#         if not element is None:
+#             index.append(element)
 
-    getOne = index[random.randint(0, len(index)-1)]
-    print("photo back url :" + getOne)
-    return getOne
+#     getOne = index[random.randint(0, len(index)-1)]
+#     print("photo back url :" + getOne)
+#     return getOne
 
-def SqlFindDataUrl():
-    #connect info
-    host = os.environ['DATABASE_HOST']
-    port = os.environ['DATABASE_PORT']
-    database = os.environ['DATABASE']
-    user = os.environ['DATABASE_USER']
-    passwd = os.environ['DATABASE_PASSWORD']
+# def SqlFindDataUrl():
+#     #connect info
+#     host = os.environ['DATABASE_HOST']
+#     port = os.environ['DATABASE_PORT']
+#     database = os.environ['DATABASE']
+#     user = os.environ['DATABASE_USER']
+#     passwd = os.environ['DATABASE_PASSWORD']
 
-    #construct connect string
-    conn = psycopg2.connect(database=database,host=host,user=user,password=passwd,port=port)
-    cur = conn.cursor()
+#     #construct connect string
+#     conn = psycopg2.connect(database=database,host=host,user=user,password=passwd,port=port)
+#     cur = conn.cursor()
 
-    #查共有幾個
-    sql = "SELECT count(*) FROM image"
-    cur.execute(sql)
-    rows=cur.fetchall()
+#     #查共有幾個
+#     sql = "SELECT count(*) FROM image"
+#     cur.execute(sql)
+#     rows=cur.fetchall()
 
-    #random其中一個
-    ranId = random.randint(1,int(rows[0][0]))
-    takeUrl = "SELECT title,url FROM image WHERE id ={0}".format(ranId)
-    cur.execute(takeUrl)
-    titleRow = cur.fetchall()
+#     #random其中一個
+#     ranId = random.randint(1,int(rows[0][0]))
+#     takeUrl = "SELECT title,url FROM image WHERE id ={0}".format(ranId)
+#     cur.execute(takeUrl)
+#     titleRow = cur.fetchall()
 
-    conn.commit() # 查询时无需，此方法提交当前事务。如果不调用这个方法，无论做了什么修改，自从上次调用#commit()是不可见的
-    cur.close()
-    conn.close()
+#     conn.commit() # 查询时无需，此方法提交当前事务。如果不调用这个方法，无论做了什么修改，自从上次调用#commit()是不可见的
+#     cur.close()
+#     conn.close()
 
-    return titleRow[0][1]
+#     return titleRow[0][1]
 
-def randomIgImage():
-    url = SqlFindDataUrl()
-    resp = requests.get(url)
-    soup = BeautifulSoup(resp.text, 'html.parser')
-    main_table = soup.find('article')
-    img_all = main_table.find_all('img')
+# def randomIgImage():
+#     url = SqlFindDataUrl()
+#     resp = requests.get(url)
+#     soup = BeautifulSoup(resp.text, 'html.parser')
+#     main_table = soup.find('article')
+#     img_all = main_table.find_all('img')
 
 
 

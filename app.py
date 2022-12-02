@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 import os
 from service.ChromeClawer import catchWeb
-from service.Clawer import ticketInfo,imageInfo,exchangeRate,fruitPrice,getHtmlImgUrl,getSebUrl,getCk101Url,getCk101Photo
+from service.Clawer import exchangeRate
 
 from linebot import (
     LineBotApi, WebhookHandler
