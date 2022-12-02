@@ -41,7 +41,7 @@ def exchangeRate(country):
     bank_cash_sell = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[3]')
     bank_online_buy = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[4]')
     bank_online_sell = source_code.xpath('//*[@id="ie11andabove"]/div/table/tbody/tr[1]/td[5]')
-    result = "現金買入: " + bank_cash_buy[0].text.strip() + '\n' + "現金賣出: " + bank_cash_sell[0].text.strip() + '\n\n' + "即期買入: " + bank_online_buy[0].text.strip() + '\n' + "即期賣出: " + bank_online_sell[0].text.strip() + '\n'
+    result = "現金買入: " + bank_cash_buy[0].text.strip() + '\n' + "現金賣出: " + bank_cash_sell[0].text.strip() + '\n\n' + "即期買入: " + bank_online_buy[0].text.strip() + '\n' + "即期賣出: " + bank_online_sell[0].text.strip()
     return result
     # resp.encoding = "utf-8"
     # rateString = ""
